@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mr. Movie 0.95</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 10px;
+            width: 400px;
+            min-height: 500px; /* Set the minimum height to accommodate all buttons */
+            overflow-y: hidden; /* Prevent unwanted vertical scrolling */
+        }
+        .hidden {
+            display: none;
+        }
+        #queryInput {
+            width: calc(100% - 20px);
+            padding: 10px;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        #submitQuery {
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #0078d7;
+            color: white;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        #submitQuery:hover {
+            background-color: #005a9e;
+        }
+        .movie-item {
+            margin-bottom: 5px;
+        }
+        button {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<h3 id="popupTitle">Mr. Movie 0.95</h3>
+<br>
+<button id="configureButton">Configure</button>
+<div id="inputContainer" class="hidden">
+    <input id="queryInput" type="text" placeholder="Enter movie or text here..." />
+    <button id="submitQuery">Search</button>
+</div>
+<!--<div id="moviesList"></div>-->
+<div id="moviesContainer" style="max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
+<table id="moviesList" border="1">
+    <thead>
+    <tr>
+        <th>Sel</th>
+        <th>Title</th>
+        <th>Rotten %</th>
+        <th>Additional Info</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+</div>
+
+<div class="spacer"></div>
+<br>
+<button id="getMoreInfo" class="hidden">Get More Info</button>
+<button id="setAll">Set All</button> <!-- Added Set All Button -->
+<button id="clearAll">Clear All</button> <!-- Added Clear All Button -->
+<button id="openMovieTable">Open Movie Table</button>
+<button id="openActorTable">Open Actor Table</button>
+<!--<button id="resetTablesButton">Reset Tables</button>-->
+<script type="module" src="popup.js"></script>
+</body>
+</html>

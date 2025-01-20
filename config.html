@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configure Search Engines</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 10px;
+            width: 300px;
+        }
+        .checkbox-row label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        button {
+            margin-top: 10px;
+            margin-right: 5px;
+            padding: 5px 10px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .key-value-row {
+            margin-top: 15px;
+        }
+        .key-value-row input {
+            margin-right: 5px;
+            padding: 5px;
+            width: calc(50% - 10px);
+        }
+    </style>
+</head>
+<body>
+<h3>Configure Search Engines</h3>
+<div id="checkboxContainer" class="checkbox-row"></div>
+<label>
+    <input id="newWindowCheckbox" type="checkbox" checked>
+    Open in New Window
+</label>
+<button id="setAll">Set All</button>
+<button id="clearAll">Clear All</button>
+<button id="saveConfig">Save</button>
+<div class="key-value-row">
+    <input id="keyField" type="text" placeholder="Key">
+    <input id="valueField" type="text" placeholder="Value">
+</div>
+<button id="storeKeyValue">Store</button>
+<button id="retrieveKeyValue">Retrieve</button>
+<script type="module" src="config.js"></script>
+</body>
+</html>
