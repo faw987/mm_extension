@@ -15,6 +15,28 @@ let testAPI = '';
 let apikey = s1 + s2;
 
 
+
+// Example JSON object
+const jsonData = {
+    menus: [
+        { id: "movieTitle", title: "Titles", setModeTo: "movies" },
+        { id: "movieActor", title: "Actors", setModeTo: "actors" },
+        { id: "restaurants", title: "Restaurants", setModeTo: "restaurants" }
+    ]
+};
+
+
+
+
+// Iterating over the array and extracting details
+jsonData.menus.forEach((menu) => {
+    console.log(`ID: ${menu.id}`);
+    console.log(`Title: ${menu.title}`);
+    console.log(`setModeTo: ${menu.setModeTo}`);
+    console.log("--------");
+});
+
+
 const CURRENT_CONFIG_VERSION = 2;
 const DEFAULT_CONFIG = {
     version: CURRENT_CONFIG_VERSION,
@@ -72,15 +94,6 @@ function migrateConfig(oldConfig, newVersion) {
 
     return newConfig;
 }
-//
-// chrome.storage.onChanged.addListener((changes, namespace) => {
-//     for (let [key, {oldValue, newValue}] of Object.entries(changes)) {
-//         console.log(
-//             `Storage key "${key}" in namespace "${namespace}" changed.`,
-//             `Old value was "${oldValue}", new value is "${newValue}".`
-//         );
-//     }
-// });
 
 chrome.storage.onChanged.addListener((changes, namespace) => {
     for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
@@ -94,22 +107,6 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
     }
 });
 
-//
-// const key = 'openaikey';
-// chrome.storage.local.get([key], (data) => {
-//     if (data[key] !== undefined) {
-//         // valueField.value = data[key];
-//         console.log(`Retrieved: ${key} = ${data[key]}`);
-//         apikey = data[key];
-//         console.log(`>>>>>>>>>>>>> set >>>>>>>>>> apikey: ${apikey}`);
-//     } else {
-//         console.log(`Key "${key}" not found.`);
-//     }
-// });
-//
-// console.log(`>>>>>>>>>>>>>>>>>>>>>>> apikey: ${apikey}`);
-// alert("break");
-// //
 
 const getApiKey = (key) => {
     return new Promise((resolve, reject) => {
@@ -219,6 +216,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 let invocationContext = "toolbar"; // Default to toolbar
 
 chrome.contextMenus.onClicked.addListener((info) => {
+
+   // movieTitle
+
     if (info.menuItemId === "movieTitle" && info.selectionText) {
         invocationContext = "contextMenu"; // Update context
         const inputText = info.selectionText.trim();
@@ -260,7 +260,7 @@ chrome.contextMenus.onClicked.addListener((info) => {
     }
     ;
 
-
+// movieActor
     if (info.menuItemId === "movieActor" && info.selectionText) {
         invocationContext = "contextMenu"; // Update context
         const inputText = info.selectionText.trim();
