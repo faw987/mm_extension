@@ -17,7 +17,7 @@ let apikey = s1 + s2;
 
 
 // Example JSON object
-const jsonData = {
+const configData = {
     menus: [
         { id: "movieTitle", title: "Titles", setModeTo: "movies" },
         { id: "movieActor", title: "Actors", setModeTo: "actors" },
@@ -29,7 +29,7 @@ const jsonData = {
 
 
 // Iterating over the array and extracting details
-jsonData.menus.forEach((menu) => {
+configData.menus.forEach((menu) => {
     console.log(`ID: ${menu.id}`);
     console.log(`Title: ${menu.title}`);
     console.log(`setModeTo: ${menu.setModeTo}`);
@@ -145,7 +145,7 @@ findMovieTitles("The Graduate").then((titles) => {
         type: "basic",
         iconUrl: "icons/video-camera128128.png", // Replace with an actual icon in your extension folder
         title: "Hello, World!",
-        message: `This is a basic notification example. testAPI: ${testAPI}`,
+        message: `If findMovieTitles succeeds expect to see The Graduate: ${testAPI}`,
     }, () => {
         if (chrome.runtime.lastError) {
             console.error("Notification error:", chrome.runtime.lastError);
@@ -160,24 +160,46 @@ console.log(`3 >>>>>>>>>>>>>>>>>>>>>>> apikey: ${apikey}`);
 
 // Add context menu items
 chrome.runtime.onInstalled.addListener(() => {
-    chrome.contextMenus.create({
-        id: "movieTitle",
-        title: "Titles",
-        contexts: ["selection"]
+    // chrome.contextMenus.create({
+    //     id: "movieTitle",
+    //     title: "Titles",
+    //     contexts: ["selection"]
+    // });
+    //
+    // chrome.contextMenus.create({
+    //     id: "movieActor",
+    //     title: "Actors",
+    //     contexts: ["selection"]
+    // });
+    //
+    // chrome.contextMenus.create({
+    //     id: "restaurants",
+    //     title: "Restaurants",
+    //     contexts: ["selection"]
+    // });
+
+    // Iterating over the array and extracting details
+    configData.menus.forEach((menu) => {
+        console.log(`ID: ${menu.id}`);
+        console.log(`Title: ${menu.title}`);
+        console.log(`setModeTo: ${menu.setModeTo}`);
+        console.log("--------");
+
+        chrome.contextMenus.create({
+                id: `${menu.id}`,
+                title: `${menu.title}`,
+                contexts: ["selection"]
+            });
+
     });
 
-    chrome.contextMenus.create({
-        id: "movieActor",
-        title: "Actors",
-        contexts: ["selection"]
-    });
 
-    chrome.contextMenus.create({
-        id: "restaurants",
-        title: "Restaurants",
-        contexts: ["selection"]
-    });
 });
+
+
+
+
+
 
 
 chrome.storage.local.set({mode: 'uninitialized'}, () => {
