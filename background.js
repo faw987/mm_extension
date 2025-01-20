@@ -15,7 +15,7 @@ let testAPI = '';
 let apikey = s1 + s2;
 
 
-
+let inputText = "";
 // Example JSON object
 const configData = {
     menus: [
