@@ -19,9 +19,48 @@ let apikey = s1 + s2;
 // Example JSON object
 const configData = {
     menus: [
-        { id: "movieTitle", title: "Titles", setModeTo: "movies" },
-        { id: "movieActor", title: "Actors", setModeTo: "actors" },
-        { id: "restaurants", title: "Restaurants", setModeTo: "restaurants" }
+        { id: "movieTitle", title: "Titles", setModeTo: "movies",
+            messages: [
+                {role: "system", content: 'Identify all movie titles in the given text.'},
+                {
+                    role: "user",
+                    content: `Extract movie titles from the following text:\n${inputText}. 
+                    list each title on a seperate line. Do not number the results, just the title please.
+                    no extranious punctuation. no leading hyphen.
+                    Do not include "The movie title in the given text is" in the output, just the title.
+                    double check your work.`
+                }
+            ],
+        },
+        { id: "movieActor", title: "Actors", setModeTo: "actors",
+            messages: [
+                {role: "system", content: 'Identify all movie actors in the given text.'},
+                {
+                    role: "user",
+                    content:
+                    //     `Extract a list of all movie actors from the following text:\n${inputText}.
+                    // list each actor on a seperate line. Do not number the results, just the actor name please.
+                    // double check your work.`
+                        `list all actors and actresses mentioned here: "${inputText}".
+                    each actors name should be listed on a seperate line with no additional added information.
+                    just the actors name of a line by itself. no hyphen, asterisk or number.`
+                }
+            ],
+        },
+        { id: "restaurants", title: "Restaurants", setModeTo: "restaurants",
+            messages: [
+                {role: "system", content: 'Identify all restaurants in the given text.'},
+                {
+                    role: "user",
+                    content:
+                    //     `Extract a list of all movie actors from the following text:\n${inputText}.
+                    // list each actor on a seperate line. Do not number the results, just the actor name please.
+                    // double check your work.`
+                        `list all restaurants in this text: "${inputText}".
+                    list each restaurant name on a seperate line.`
+                }
+            ],
+        }
     ]
 };
 
