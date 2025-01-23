@@ -3,7 +3,7 @@ import {callOpenAI} from './utils/openai.js';
 import {aggregateSearchResultsInNewWindow} from './utils/util1.js';
 import {logInfo, logError} from './utils/logger.js';
 import {extractMovieTitle} from './utils/util1.js';
-
+import {getCurrentTime} from './utils/util1.js';
 
 let s1 = "sk-proj-OLVANonuD0O-x50K_suvL6sJrnwCGFsDximM0VUemM44yWEH8FyjxCOZfY0SgL_8MHGvDpnJ8CT3";
 let s2 = "BlbkFJZkMJ_vOeZdbqi3wGGo1ZpGB7yx1n6beziU3tgQ7tUIEEU4exAPZCKkDxCeahz9dwEntFoZ4YsA";
@@ -14,9 +14,12 @@ let restaurants = [];
 let testAPI = '';
 let apikey = s1 + s2;
 
-
-let inputText = "";
 // Example JSON object
+
+// n.b. we escape stuff to not expand at this time: :
+// \$\{inputText\}
+//
+
 const configData = {
     menus: [
         { id: "movieTitle", title: "Titles", setModeTo: "movies",
@@ -24,9 +27,9 @@ const configData = {
                 {role: "system", content: 'Identify all movie titles in the given text.'},
                 {
                     role: "user",
-                    content: `Extract movie titles from the following text:\n${inputText}. 
+                    content: `Extract movie titles from the following text:\n\$\{inputText\}. 
                     list each title on a seperate line. Do not number the results, just the title please.
-                    no extranious punctuation. no leading hyphen.
+                    no extraneous punctuation. no leading hyphen.
                     Do not include "The movie title in the given text is" in the output, just the title.
                     double check your work.`
                 }
@@ -37,11 +40,7 @@ const configData = {
                 {role: "system", content: 'Identify all movie actors in the given text.'},
                 {
                     role: "user",
-                    content:
-                    //     `Extract a list of all movie actors from the following text:\n${inputText}.
-                    // list each actor on a seperate line. Do not number the results, just the actor name please.
-                    // double check your work.`
-                        `list all actors and actresses mentioned here: "${inputText}".
+                    content: `list all actors and actresses mentioned here: "\$\{inputText\}".
                     each actors name should be listed on a seperate line with no additional added information.
                     just the actors name of a line by itself. no hyphen, asterisk or number.`
                 }
@@ -52,12 +51,8 @@ const configData = {
                 {role: "system", content: 'Identify all restaurants in the given text.'},
                 {
                     role: "user",
-                    content:
-                    //     `Extract a list of all movie actors from the following text:\n${inputText}.
-                    // list each actor on a seperate line. Do not number the results, just the actor name please.
-                    // double check your work.`
-                        `list all restaurants in this text: "${inputText}".
-                    list each restaurant name on a seperate line.`
+                    content: `list all restaurants in this text: "\$\{inputText\}".
+                    list each restaurant name on a separate line.`
                 }
             ],
         }
@@ -65,7 +60,24 @@ const configData = {
 };
 
 
+function evaluateTemplate(template, context) {
+    console.log("Starting template evaluation...");
+    console.log("Template:", template);
+    console.log("Context:", context);
 
+    return template.replace(/\$\{([\w]+)\}/g, (_, variable) => {
+        console.log(`Matched placeholder: ${variable}`);
+        console.log(`Looking up value for "${variable}" in context...`);
+
+        if (context[variable] !== undefined) {
+            console.log(`Found value: ${context[variable]} for variable: ${variable}`);
+            return context[variable];
+        } else {
+            console.warn(`No value found for variable: ${variable}. Replacing with an empty string.`);
+            return ""; // Replace with empty string if variable is not found
+        }
+    });
+}
 
 // Iterating over the array and extracting details
 configData.menus.forEach((menu) => {
@@ -73,6 +85,22 @@ configData.menus.forEach((menu) => {
     console.log(`Title: ${menu.title}`);
     console.log(`setModeTo: ${menu.setModeTo}`);
     console.log("--------");
+
+    let inputText = "Fred"
+
+    // Context for variable substitution
+    const context = { inputText };
+
+// Iterate over the messages to evaluate "user" content
+    configData.menus.forEach((menu) => {
+        menu.messages.forEach((message) => {
+            if (message.role === "user") {
+                const evaluatedContent = evaluateTemplate(message.content, context);
+                console.log(`Evaluated Content for ${menu.id}:`);
+                console.log(evaluatedContent);
+            }
+        });
+    });
 });
 
 
@@ -176,6 +204,7 @@ getApiKey(key)
 console.log(`2 >>>>>>>>>>>>>>>>>>>>>>> apikey: ${apikey}`);
 
 
+// check if API is working and send notification if it is OK
 
 findMovieTitles("The Graduate").then((titles) => {
     console.log(`>>>>>>>>>>>>>>>>>>>>>>> titles: ${titles}`)
@@ -229,16 +258,8 @@ chrome.runtime.onInstalled.addListener(() => {
                 title: `${menu.title}`,
                 contexts: ["selection"]
             });
-
     });
-
-
 });
-
-
-
-
-
 
 
 chrome.storage.local.set({mode: 'uninitialized'}, () => {
@@ -315,11 +336,9 @@ chrome.contextMenus.onClicked.addListener((info) => {
                         height: 600
                     });
                 });
-            }
-            ;
+            };
         });
-    }
-    ;
+    };
 
 // movieActor
     if (info.menuItemId === "movieActor" && info.selectionText) {
@@ -335,9 +354,6 @@ chrome.contextMenus.onClicked.addListener((info) => {
                 console.log('Value set successfully key=mode value=actors');
             }
         });
-
-        // console.log(`>>>>>>>>>>>>>>>>>>>>>>> apiKey: ${apikey}`)
-
 
         findMovieActors(inputText).then((actors) => {
             console.log("background actors:", actors);
@@ -361,8 +377,7 @@ chrome.contextMenus.onClicked.addListener((info) => {
                         height: 600
                     });
                 });
-            }
-            ;
+            };
         });
     };
 
@@ -379,9 +394,6 @@ chrome.contextMenus.onClicked.addListener((info) => {
                 console.log('Value set successfully key=mode value=actors');
             }
         });
-
-        // console.log(`>>>>>>>>>>>>>>>>>>>>>>> apiKey: ${apikey}`)
-
 
         findRestaurants(inputText).then((rests) => {
             console.log("background rests:", rests);
@@ -405,17 +417,9 @@ chrome.contextMenus.onClicked.addListener((info) => {
                         height: 600
                     });
                 });
-            }
-            ;
+            };
         });
-    }
-    ;
-
-
-
-
-
-
+    };
 });
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -454,9 +458,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 // Helper function to find movie titles using OpenAI
 async function findMovieTitles(inputText) {
-    // const apiKey2 = `${calcResults()}`; // Replace with your API key
-
-
     console.log(`>>>>>>>>>>>>> findMovieTitles 1 >>>>>>>>>> apikey: ${apikey}`);
 
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -472,8 +473,8 @@ async function findMovieTitles(inputText) {
                 {
                     role: "user",
                     content: `Extract movie titles from the following text:\n${inputText}. 
-                    list each title on a seperate line. Do not number the results, just the title please.
-                    no extranious punctuation. no leading hyphen.
+                    list each title on a separate line. Do not number the results, just the title please.
+                    no extraneous punctuation. no leading hyphen.
                     Do not include "The movie title in the given text is" in the output, just the title.
                     double check your work.`
                 }
@@ -481,8 +482,6 @@ async function findMovieTitles(inputText) {
             max_tokens: 200
         })
     });
-
-    console.log(`>>>>>>>>>>>>> findMovieTitles 2 >>>>>>>>>> apikey: ${apikey}`);
 
     if (!response.ok) {
         throw new Error(`findMovieTitles OpenAI API error: ${response.statusText}`);
@@ -501,8 +500,6 @@ async function findMovieActors(inputText) {
     const earliestYear = 1900;
     const latestYear = 1960;
 
-    console.log(`>>>>>>>>>>>>>>>>>>>>>>> apiKey: ${apikey}`)
-
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
         headers: {
@@ -510,20 +507,14 @@ async function findMovieActors(inputText) {
             Authorization: `Bearer ${apikey}`
         },
         body: JSON.stringify({
-            // model: "gpt-3.5-turbo",
-            // model: "gpt-4o-mini",
             model: "gpt-3.5-turbo",
             messages: [
                 {role: "system", content: 'Identify all movie actors in the given text.'},
                 {
                     role: "user",
-                    content:
-                    //     `Extract a list of all movie actors from the following text:\n${inputText}.
-                    // list each actor on a seperate line. Do not number the results, just the actor name please.
-                    // double check your work.`
-                        `list all actors and actresses mentioned here: "${inputText}".
-                    each actors name should be listed on a seperate line with no additional added information.
-                    just the actors name of a line by itself. no hyphen, asterisk or number.`
+                    content: `list all actors and actresses mentioned here: "${inputText}".
+                    each actors name should be listed on a separate line with no additional added information.
+                    just the actors name on a line by itself. no hyphen, asterisk or number.`
                 }
             ],
             max_tokens: 200
@@ -547,8 +538,6 @@ async function findRestaurants(inputText) {
     const earliestYear = 1900;
     const latestYear = 1960;
 
-    console.log(`>>>>>>>>>>>>>>>>>>>>>>> apiKey: ${apikey}`)
-
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
         headers: {
@@ -556,19 +545,14 @@ async function findRestaurants(inputText) {
             Authorization: `Bearer ${apikey}`
         },
         body: JSON.stringify({
-            // model: "gpt-3.5-turbo",
-            // model: "gpt-4o-mini",
             model: "gpt-3.5-turbo",
             messages: [
                 {role: "system", content: 'Identify all restaurants in the given text.'},
                 {
                     role: "user",
-                    content:
-                    //     `Extract a list of all movie actors from the following text:\n${inputText}.
-                    // list each actor on a seperate line. Do not number the results, just the actor name please.
-                    // double check your work.`
-                        `list all restaurants in this text: "${inputText}".
-                    list each restaurant name on a seperate line.`
+                    content: `list all restaurants in this text: "${inputText}".
+                    list each restaurant name on a separate line.
+                    just the restaurants name on a line by itself. no hyphen, asterisk or number.`
                 }
             ],
             max_tokens: 200

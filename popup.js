@@ -3,6 +3,7 @@ import {logInfo, logError} from './utils/logger.js';
 // import {aggregateSearchResultsInNewWindow, calcResults} from './utils/util1.js';
 import {aggregateSearchResultsInNewWindow } from './utils/util1.js';
 import {extractMovieTitle} from './utils/util1.js';
+import {getCurrentTime} from './utils/util1.js';
 
 
 var apikey = '';
@@ -58,29 +59,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    function getCurrentTime() {
-        // Get the current date and time
-        const now = new Date();
-
-        // Format the time in a 12-hour format with AM/PM
-        const options = {
-            hour: 'numeric',
-            minute: 'numeric',
-            hour12: true,
-            timeZoneName: 'short'
-        };
-
-        const formatter = new Intl.DateTimeFormat('en-US', options);
-        const formattedTime = formatter.format(now);
-
-        // Extract timezone abbreviation from the formatted string
-        const [time, tz] = formattedTime.split(' ');
-
-        // Return in "4:40 PM EST" format
-        return `${time} ${tz}`;
-    };
-
-
     const myTime = getCurrentTime();
     const myRelease = "0.95";
     document.title = `Mr. Movie ${myRelease} - ${myTime} - ???`;
@@ -89,30 +67,6 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("EXTRA          chrome.storage.local.get mode:", data.mode);
     });
 
-    // function buildHtmlMovies(movies, moviesList) {
-    //     movies.forEach((movie) => {
-    //         const item = document.createElement("div");
-    //         item.className = "movie-item";
-    //
-    //         const checkbox = document.createElement("input");
-    //         checkbox.type = "checkbox";
-    //         checkbox.value = movie;
-    //
-    //         const link = document.createElement("a");
-    //         link.textContent = movie;
-    //         link.href = "#";
-    //         link.addEventListener("click", () => {
-    //             handleMovieClick(extractMovieTitle(movie));
-    //         });
-    //
-    //         item.appendChild(checkbox);
-    //         item.appendChild(link);
-    //
-    //         moviesList.appendChild(item);
-    //     });
-    // }
-
-
     function buildHtmlMovies(movies) {
         const tableBody = document.querySelector("#moviesList tbody");
         tableBody.innerHTML = ""; // Clear existing rows
@@ -120,8 +74,6 @@ document.addEventListener("DOMContentLoaded", () => {
         movies.forEach((movie, index) => {
             const row = document.createElement("tr");
             row.dataset.id = index;
-
-
 
             const checkbox = document.createElement("input");
             checkbox.type = "checkbox";
@@ -134,25 +86,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 handleMovieClick(extractMovieTitle(movie));
             });
 
-
-
-            // const checkboxCell = document.createElement("input");
-            // let checkboxCell = document.createElement("td");
-            // checkboxCell = checkbox;
-            //
-            // const movieCell = document.createElement("td");
-            // // movieCell.textContent = movie;
-            // movieCell.textContent = link;
-
             // Create table cells
             const checkboxCell = document.createElement("td");
             checkboxCell.appendChild(checkbox); // Append checkbox to the cell
 
             const movieCell = document.createElement("td");
             movieCell.appendChild(link); // Append link to the cell
-
-
-
 
             const scoreCell = document.createElement("td");
             scoreCell.textContent = "N/A";
@@ -176,40 +115,8 @@ document.addEventListener("DOMContentLoaded", () => {
             row.children[2].textContent = additionalInfo || "N/A"; // Update additional info column
         }
     }
-//
-// // Example usage
-//     const movies = ["Movie 1", "Movie 2", "Movie 3"];
-//     buildMovieTable(movies);
-//
-// // Update the second movie row after some delay
-//     setTimeout(() => {
-//         updateTableRow(1, "92%", "Critic Favorite");
-//     }, 2000);
-
-
 
     function buildHtmlActors(actors, moviesList) {
-        // actors.forEach((actor) => {
-        //     const item = document.createElement("div");
-        //     item.className = "movie-item";
-        //
-        //     const checkbox = document.createElement("input");
-        //     checkbox.type = "checkbox";
-        //     checkbox.value = actor;
-        //
-        //     const link = document.createElement("a");
-        //     link.textContent = actor;
-        //     link.href = "#";
-        //
-        //     // link.addEventListener("click", () => {
-        //     //     handleMovieClick(extractMovieTitle(movie));
-        //     // });
-        //
-        //     item.appendChild(checkbox);
-        //     item.appendChild(link);
-        //
-        //     moviesList.appendChild(item);
-        // });
         const tableBody = document.querySelector("#moviesList tbody");
         tableBody.innerHTML = ""; // Clear existing rows
 
@@ -218,8 +125,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const row = document.createElement("tr");
             row.dataset.id = index;
-
-
 
             const checkbox = document.createElement("input");
             checkbox.type = "checkbox";
@@ -232,25 +137,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 handleMovieClick(extractMovieTitle(movie));
             });
 
-
-
-            // const checkboxCell = document.createElement("input");
-            // let checkboxCell = document.createElement("td");
-            // checkboxCell = checkbox;
-            //
-            // const movieCell = document.createElement("td");
-            // // movieCell.textContent = movie;
-            // movieCell.textContent = link;
-
             // Create table cells
             const checkboxCell = document.createElement("td");
             checkboxCell.appendChild(checkbox); // Append checkbox to the cell
 
             const movieCell = document.createElement("td");
             movieCell.appendChild(link); // Append link to the cell
-
-
-
 
             const scoreCell = document.createElement("td");
             scoreCell.textContent = "N/A";
@@ -265,40 +157,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
             tableBody.appendChild(row);
         });
-
     }
 
 
     function buildHtmlRestaurants(restaurants, restaurantList) {
-        // restaurants.forEach((restaurant) => {
-        //     const item = document.createElement("div");
-        //     item.className = "movie-item";
-        //
-        //     const checkbox = document.createElement("input");
-        //     checkbox.type = "checkbox";
-        //     checkbox.value = restaurant;
-        //
-        //     const link = document.createElement("a");
-        //     link.textContent = restaurant;
-        //     link.href = "#";
-        //
-        //     // link.addEventListener("click", () => {
-        //     //     handleMovieClick(extractMovieTitle(movie));
-        //     // });
-        //
-        //     item.appendChild(checkbox);
-        //     item.appendChild(link);
-        //
-        //     moviesList.appendChild(item);
-        // });
 
         const tableBody = document.querySelector("#moviesList tbody");
         tableBody.innerHTML = ""; // Clear existing rows
 
-        // movies.forEach((movie, index) => {
         restaurants.forEach((restaurant, index) => {
-
-        // actors.forEach((actor, index) => {
 
             const row = document.createElement("tr");
             row.dataset.id = index;
@@ -316,25 +183,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 handleMovieClick(extractMovieTitle(movie));
             });
 
-
-
-            // const checkboxCell = document.createElement("input");
-            // let checkboxCell = document.createElement("td");
-            // checkboxCell = checkbox;
-            //
-            // const movieCell = document.createElement("td");
-            // // movieCell.textContent = movie;
-            // movieCell.textContent = link;
-
             // Create table cells
             const checkboxCell = document.createElement("td");
             checkboxCell.appendChild(checkbox); // Append checkbox to the cell
 
             const movieCell = document.createElement("td");
             movieCell.appendChild(link); // Append link to the cell
-
-
-
 
             const scoreCell = document.createElement("td");
             scoreCell.textContent = "N/A";
@@ -371,7 +225,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         console.log(`>>>>>>>>>>>>>>>>>>>>>>> apikey: ${apikey}`)
 
-        // const apiKey2 = `${calcResults()}`; // Replace with your API key
         const response = await fetch("https://api.openai.com/v1/chat/completions", {
             method: "POST",
             headers: {
@@ -398,13 +251,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const data = await response.json();
         const resultText = data.choices[0]?.message?.content?.trim();
-
-        // chrome.notifications.create({
-        //     type: "basic",
-        //     // iconUrl: "icon128.png",
-        //     title: "xxxfindMovieTitles Complete",
-        //     message: `the resultText: ${resultText}`,
-        // });
 
         return resultText ? resultText.split("\n").map(line => line.trim()) : [];
     };
@@ -498,7 +344,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (mmode == 'movies') {
 
-
             toggleButtons(true);
 
             chrome.runtime.sendMessage({action: "getMovies"}, (response) => {
@@ -515,8 +360,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     getMoreInfo.classList.remove("hidden");
                 }
             });
-        }
-        ;
+        };
 
         if (mmode == 'actors') {
 
@@ -536,8 +380,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     getMoreInfo.classList.remove("hidden");
                 }
             });
-        }
-        ;
+        };
 
         if (mmode == 'restaurants') {
 
@@ -557,10 +400,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     getMoreInfo.classList.remove("hidden");
                 }
             });
-        }
-        ;
-
-
+        };
     }
 
 // Determine the context: toolbar or context menu
@@ -582,36 +422,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         ;
     });
-    //
-    // // Handle Set All Button Click
-    // setAllButton.addEventListener("click", () => {
-    //     document.querySelectorAll(".movie-item input[type='checkbox']").forEach((checkbox) => {
-    //         checkbox.checked = true;
-    //     });
-    // });
-    //
-    // // Handle Clear All Button Click
-    // clearAllButton.addEventListener("click", () => {
-    //     document.querySelectorAll(".movie-item input[type='checkbox']").forEach((checkbox) => {
-    //         checkbox.checked = false;
-    //     });
-    // });
-    //
-    // // Handle GetMoreInfo button click
-    // getMoreInfo.addEventListener("click", () => {
-    //     const selectedMovies = [];
-    //     document.querySelectorAll(".movie-item input[type='checkbox']").forEach((checkbox) => {
-    //         if (checkbox.checked) {
-    //             selectedMovies.push(checkbox.value);
-    //         }
-    //     });
-    //
-    //     if (selectedMovies.length > 0) {
-    //         chrome.runtime.sendMessage({action: "processMovies", movies: selectedMovies});
-    //     } else {
-    //         alert("Please select at least one movie.");
-    //     }
-    // });
 
     // Handle Set All Button Click
     setAllButton.addEventListener("click", () => {
@@ -672,13 +482,4 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-
-    // configureButton.addEventListener("click", () => {
-    //     chrome.windows.create({
-    //         url: "config.html",
-    //         type: "popup",
-    //         width: 350,
-    //         height: 400
-    //     });
-    // })
 });

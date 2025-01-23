@@ -133,3 +133,28 @@ export function aggregateSearchResultsInNewWindow(query) {
         }
     });
 }
+
+
+
+export function getCurrentTime() {
+    // Get the current date and time
+    const now = new Date();
+
+    // Format the time in a 12-hour format with AM/PM
+    const options = {
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: true,
+        timeZoneName: 'short'
+    };
+
+    const formatter = new Intl.DateTimeFormat('en-US', options);
+    const formattedTime = formatter.format(now);
+
+    // Extract timezone abbreviation from the formatted string
+    const [time, tz] = formattedTime.split(' ');
+
+    // Return in "4:40 PM EST" format
+    return `${time} ${tz}`;
+};
+
